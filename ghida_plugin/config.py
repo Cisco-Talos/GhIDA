@@ -56,7 +56,7 @@ class GhidaConfiguration(object):
         self.__ghidra_plugins_path = os.path.join(ida_plugins,
                                                   "ghida_plugin",
                                                   "ghidra_plugin")
-        if 'linux' in sys.platform:
+        if sys.platform in ['linux', 'darwin']:
             self.__ghidra_install_path = LP
             self.__ghidra_headless_path = os.path.join(
                 self.__ghidra_install_path,
@@ -115,7 +115,7 @@ class GhidaConfiguration(object):
                 installation_path = j_in.get('GHIDRA_INSTALLATION_PATH')
                 if installation_path is not None:
                     self.__ghidra_install_path = installation_path
-                    if 'linux' in sys.platform:
+                    if sys.platform in ['linux', 'darwin']:
                         self.__ghidra_headless_path = os.path.join(
                             self.__ghidra_install_path,
                             "support",
@@ -210,7 +210,7 @@ class GhidaConfiguration(object):
     @ghidra_install_path.setter
     def ghidra_install_path(self, value):
         self.__ghidra_install_path = value
-        if 'linux' in sys.platform:
+        if sys.platform in ['linux', 'darwin']:
             self.__ghidra_headless_path = os.path.join(
                 self.__ghidra_install_path,
                 "support",
