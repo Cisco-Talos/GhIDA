@@ -84,7 +84,7 @@ pip install pygments
 * When you rename a symbol (e.g., a function name), rename it in the decompile view, it will be updated automatically in the disasm view too.
 Otherwise, you will need to delete the decompiled code from the cache and decompile the function again.
 * If the program is rebased, all the caches (decompiler, comments, symbol table) are invalidated. Functions must be decompiled again.
-
+* It's possible to change the `TIMEOUT` value for the Ghidra analysis in [ghida_plugin/lib.py](ghida_plugin/lib.py). By default, it's set to 300 seconds, but it may be increased if needed. Please, do not modify the value of `COUNTER_MAX` or `SLEEP_LENGTH`, since they are all related.
 ## Features description
 
 ### Synchronization
