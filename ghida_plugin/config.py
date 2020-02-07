@@ -33,6 +33,10 @@ WP = "C:\\Users\\IEUser\\Desktop\\ghidra_9.0.4"
 GAAS = "http://localhost:8080/ghidra/api"
 
 
+def _is_unix():
+    return 'linux' in sys.platform or 'darwin' in sys.platform
+
+
 class GhidaConfiguration(object):
 
     def __init__(self):
@@ -51,11 +55,10 @@ class GhidaConfiguration(object):
         """
         Set installation default values.
         """
-        (plugin, _) = os.path.split(os.path.realpath(__file__))
-
-        self.__ghidra_plugins_path = os.path.join(plugin, "ghidra_plugin")
-
-        if 'linux' in sys.platform:
+        (plugin_path, _) = os.path.split(os.path.realpath(__file__))
+        self.__ghidra_plugins_path = os.path.join(plugin_path, "ghidra_plugin")
+        
+        if _is_unix():
             self.__ghidra_install_path = LP
             self.__ghidra_headless_path = os.path.join(
                 self.__ghidra_install_path,
@@ -114,7 +117,7 @@ class GhidaConfiguration(object):
                 installation_path = j_in.get('GHIDRA_INSTALLATION_PATH')
                 if installation_path is not None:
                     self.__ghidra_install_path = installation_path
-                    if 'linux' in sys.platform:
+                    if _is_unix():
                         self.__ghidra_headless_path = os.path.join(
                             self.__ghidra_install_path,
                             "support",
@@ -209,7 +212,7 @@ class GhidaConfiguration(object):
     @ghidra_install_path.setter
     def ghidra_install_path(self, value):
         self.__ghidra_install_path = value
-        if 'linux' in sys.platform:
+        if _is_unix():
             self.__ghidra_headless_path = os.path.join(
                 self.__ghidra_install_path,
                 "support",

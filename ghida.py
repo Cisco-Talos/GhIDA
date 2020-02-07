@@ -196,7 +196,11 @@ class ScreenEAHook(ida_kernwin.View_Hooks):
 def goto(shift=False):
     print("GhIDA:: [DEBUG] goto called")
 
-    symbol = idaapi.get_highlighted_identifier()
+    symbol = None
+    ret = ida_kernwin.get_highlight(ida_kernwin.get_current_viewer())
+    if ret and ret[1]:
+        symbol = ret[0]
+
     if not symbol:
         return False
 
@@ -428,7 +432,11 @@ class DecompiledViewer_t(idaapi.simplecustviewer_t):
         provided by the user in the Pop-Up
         """
         # Get the symbol
-        symbol = idaapi.get_highlighted_identifier()
+        symbol = None
+        ret = ida_kernwin.get_highlight(ida_kernwin.get_current_viewer())
+        if ret and ret[1]:
+            symbol = ret[0]
+
         if not symbol:
             idaapi.warning("Select a symbol")
             return False
