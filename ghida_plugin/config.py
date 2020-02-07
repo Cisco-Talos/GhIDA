@@ -55,11 +55,9 @@ class GhidaConfiguration(object):
         """
         Set installation default values.
         """
-        ida_plugins = idaapi.idadir("plugins")
-
-        self.__ghidra_plugins_path = os.path.join(ida_plugins,
-                                                  "ghida_plugin",
-                                                  "ghidra_plugin")
+        (plugin_path, _) = os.path.split(os.path.realpath(__file__))
+        self.__ghidra_plugins_path = os.path.join(plugin_path, "ghidra_plugin")
+        
         if _is_unix():
             self.__ghidra_install_path = LP
             self.__ghidra_headless_path = os.path.join(
