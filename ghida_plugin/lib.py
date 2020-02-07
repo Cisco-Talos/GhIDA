@@ -44,8 +44,13 @@ import idc
 from idaxml import Cancelled
 from idaxml import XmlExporter
 
-COUNTER_MAX = 300
+# This value can be changed
 TIMEOUT = 300
+
+# Do not modify it
+COUNTER_MAX = TIMEOUT * 100
+# Do not modify it
+SLEEP_LENGTH = 0.1
 GLOBAL_CHECKIN = False
 GLOBAL_FILENAME = None
 EXPORT_XML_FILE = True
@@ -69,6 +74,17 @@ def create_random_filename():
         random_string = ''.join(letters)
         GLOBAL_FILENAME = "%s_%s" % (idautils.GetInputFileMD5(), random_string)
     return GLOBAL_FILENAME
+
+
+def terminate_process(pid):
+    """
+    Kill the process
+    """
+    if os.name == 'posix':
+        os.killpg(os.getpgid(pid), signal.SIGTERM)
+    else:
+        os.kill(pid, -9)
+    return
 
 
 def get_ida_exported_files():
@@ -240,7 +256,7 @@ def ghidra_headless(address,
         print("GhIDA:: [INFO] Waiting Ghidra headless analysis to finish...")
 
         while not stop:
-            time.sleep(0.1)
+            time.sleep(SLEEP_LENGTH)
             counter += 1
             subprocess.Popen.poll(p)
 
@@ -253,17 +269,14 @@ def ghidra_headless(address,
             # User terminated action
             if idaapi.wasBreak():
                 # Termiante the process!
-                if os.name == 'posix':
-                    os.killpg(os.getpgid(p.pid), signal.SIGTERM)
-                else:
-                    os.kill(p.pid, -9)
+                terminate_process(p.pid)
                 stop = True
                 print("GhIDA:: [!] Ghidra analysis interrupted.")
                 continue
 
             # Process timeout
-            if counter > COUNTER_MAX * 10:
-                os.killpg(os.getpgid(p.pid), signal.SIGTERM)
+            if counter > COUNTER_MAX:
+                terminate_process(p.pid)
                 stop = True
                 print("GhIDA:: [!] Decompilation error - timeout reached")
                 continue
@@ -363,7 +376,8 @@ def ghidraaas_checkin(bin_file_path, filename, ghidra_server_url):
         stop = False
 
         while not stop:
-            time.sleep(0.1)
+            time.sleep(SLEEP_LENGTH)
+            counter += 1
 
             # User terminated action
             if idaapi.wasBreak():
@@ -372,7 +386,7 @@ def ghidraaas_checkin(bin_file_path, filename, ghidra_server_url):
                 continue
 
             # Reached TIIMEOUT
-            if counter > COUNTER_MAX * 10:
+            if counter > COUNTER_MAX:
                 stop = True
                 print("GhIDA:: [!] Timeout reached.")
                 continue
@@ -442,16 +456,15 @@ def ghidraaas_checkout(ghidra_server_url):
         stop = False
 
         while not stop:
-            # print("waiting check-out 1 zzz")
-            # idaapi.request_refresh(idaapi.IWID_DISASMS)
-            time.sleep(0.1)
+            time.sleep(SLEEP_LENGTH)
+            counter += 1
 
             if idaapi.wasBreak():
                 print("GhIDA:: [!] Check-out interrupted.")
                 stop = True
                 continue
 
-            if counter > COUNTER_MAX * 10:
+            if counter > COUNTER_MAX:
                 print("GhIDA:: [!] Timeout reached.")
                 stop = True
                 continue
@@ -564,16 +577,15 @@ def ghidraaas_decompile(address,
         stop = False
 
         while not stop:
-            # idaapi.request_refresh(idaapi.IWID_DISASMS)
-            # print("waiting decompile 1 zzz")
-            time.sleep(0.1)
+            time.sleep(SLEEP_LENGTH)
+            counter += 1
 
             if idaapi.wasBreak():
                 print("GhIDA:: [!] decompilation interrupted.")
                 stop = True
                 continue
 
-            if counter > COUNTER_MAX * 10:
+            if counter > COUNTER_MAX:
                 print("GhIDA:: [!] Timeout reached.")
                 stop = True
                 continue
