@@ -10,6 +10,7 @@
 #
 #---------------------------------------------------------------------
 
+from __future__ import print_function
 import ida_auto
 import ida_bytes
 import ida_diskio
@@ -1801,7 +1802,7 @@ class XmlExporter(IdaXml):
             return idc.get_struc_name(opnd.tid)
         if idc.is_strlit(f) == True:
             str_type = idc.get_str_type(addr)
-            # print ida_bytes.print_strlit_type(str_type)
+            # print(ida_bytes.print_strlit_type(str_type))
             if str_type == ida_nalt.STRTYPE_TERMCHR:
                 return "string"
             if str_type == ida_nalt.STRTYPE_PASCAL:
@@ -2664,7 +2665,7 @@ class XmlImporter(IdaXml):
             if idc.is_mapped(addr) == False:
                 msg = ("import_bookmark: address %X not enabled in database"
                        % addr)
-                print msg
+                print(msg)
                 return
             self.update_counter(BOOKMARK)
             for slot in range(ida_moves.MAX_MARK_SLOT):
@@ -2674,7 +2675,7 @@ class XmlImporter(IdaXml):
                     break
         except:
             msg = "** Exception occurred in import_bookmark **"
-            print "\n" + msg + "\n", sys.exc_type, sys.exc_value
+            print("\n" + msg + "\n", sys.exc_type, sys.exc_value)
 
     def import_cmts(self, element, sid, typ):
         """
@@ -2804,7 +2805,7 @@ class XmlImporter(IdaXml):
         """
         self.update_counter(DESCRIPTION)
         # TODO: import_description: decide what to do with DESCRIPTION
-        # print description.text
+        # print(description.text)
 
     def import_enum(self, enum):
         """
@@ -2967,7 +2968,7 @@ class XmlImporter(IdaXml):
             if idc.is_mapped(entry_point) == False:
                 msg = ("import_function: address %X not enabled in database"
                        % entry_point)
-                print msg
+                print(msg)
                 return
             idc.add_func(entry_point, BADADDR)
             self.update_counter(FUNCTION)
@@ -3002,7 +3003,7 @@ class XmlImporter(IdaXml):
                 self.import_register_var(register_var, func)
         except:
             msg = "** Exception occurred in import_function **"
-            print "\n" + msg + "\n", sys.exc_type, sys.exc_value
+            print("\n" + msg + "\n", sys.exc_type, sys.exc_value)
 
     def import_function_def(self, function_def):
         # import_function_def: NOT IMPLEMENTED
@@ -3215,7 +3216,7 @@ class XmlImporter(IdaXml):
         # TODO: import_memory_reference: store refs? maybe only user-defined?
         """
         if user == 'y':
-            #print "%08X %08X" % (addr, to_addr), op, primary
+            #print("%08X %08X" % (addr, to_addr), op, primary)
             pass
         """
 
@@ -3241,7 +3242,7 @@ class XmlImporter(IdaXml):
         seg_str = ''
         if '::' in addrstr:
             # overlay - skip for now
-            print '  ** Overlayed memory block %s skipped **  ' % name
+            print('  ** Overlayed memory block %s skipped **  ' % name)
             msg = 'Overlayed memory block %s skipped!' % name
             msg += "\n\nXML Import does not currently support"
             msg += "\noverlayed memory blocks."

@@ -49,7 +49,12 @@ def highlight_symbol_in_DISASM():
     """
     # print("GhIDA:: [DEBUG] highlight_symbol_in_DISASM called")
     disasm_widget = idaapi.find_widget('IDA View-A')
-    symbol = idaapi.get_highlighted_identifier()
+
+    symbol = None
+    ret = ida_kernwin.get_highlight(ida_kernwin.get_current_viewer())
+    if ret and ret[1]:
+        symbol = ret[0]
+
     if not symbol:
         # TODO improve it
         # Highlight a non-existing symbole
@@ -73,7 +78,11 @@ def highlight_symbol_in_DECOMP():
     highlight the corresponding symbol in DECOMP view.
     """
     # print("GhIDA:: [DEBUG] highlight_symbol_in_DECOMP called")
-    symbol = idaapi.get_highlighted_identifier()
+    symbol = None
+    ret = ida_kernwin.get_highlight(ida_kernwin.get_current_viewer())
+    if ret and ret[1]:
+        symbol = ret[0]
+
     if not symbol:
         return
 
