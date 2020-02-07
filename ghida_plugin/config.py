@@ -32,8 +32,10 @@ LP = "/home/osboxes/Desktop/ghidra_9.0.4"
 WP = "C:\\Users\\IEUser\\Desktop\\ghidra_9.0.4"
 GAAS = "http://localhost:8080/ghidra/api"
 
+
 def _is_unix():
     return 'linux' in sys.platform or 'darwin' in sys.platform
+
 
 class GhidaConfiguration(object):
 
