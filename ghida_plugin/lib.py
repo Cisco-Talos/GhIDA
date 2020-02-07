@@ -48,7 +48,7 @@ from idaxml import XmlExporter
 TIMEOUT = 300
 
 # Do not modify it
-COUNTER_MAX = TIMEOUT * 100
+COUNTER_MAX = TIMEOUT * 10
 # Do not modify it
 SLEEP_LENGTH = 0.1
 GLOBAL_CHECKIN = False
