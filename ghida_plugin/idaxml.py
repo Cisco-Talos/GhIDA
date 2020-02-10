@@ -40,6 +40,7 @@ import idautils
 import idc
 import datetime
 import os
+import sys
 import time
 from xml.etree import cElementTree
 
@@ -1178,9 +1179,9 @@ class XmlExporter(IdaXml):
             elif idc.is_code(f) == True:
                 insn = ida_ua.insn_t()
                 ida_ua.decode_insn(insn, addr)
-                target = insn.ops[op].value - ri.tdelta + ri.base
+                target = (insn.ops[op].value - ri.tdelta + ri.base) & ((1 << 64) - 1)
             elif idc.is_data(f) == True:
-                target = self.get_data_value(addr) - ri.tdelta + ri.base
+                target = (self.get_data_value(addr) - ri.tdelta + ri.base) & ((1 << 64) - 1)
             else:
                 return
         else:
@@ -1680,8 +1681,9 @@ class XmlExporter(IdaXml):
             cmt: String containing type info.
         """
         # older versions of IDAPython returned a '\n' at end of cmt
-        while cmt[-1] == '\n':
-            cmt = cmt[:-1]
+        if(len(cmt) > 0):
+            while cmt[-1] == '\n':
+                cmt = cmt[:-1]
         self.write_comment_element(TYPEINFO_CMT, cmt)
 
     def export_user_memory_reference(self, addr):
@@ -3466,7 +3468,7 @@ class XmlImporter(IdaXml):
             if self.has_attribute(structure, NAMESPACE) == False:
                 return
             namespace = self.get_attribute(structure, NAMESPACE)
-            name = namspace + '__' + name
+            name = namespace + '__' + name
             name.replace('/', '_')
             name.replace('.', '_')
             dtyp = idc.get_struc_id(name)
@@ -3535,7 +3537,7 @@ class XmlImporter(IdaXml):
             if self.has_attribute(union, NAMESPACE) == False:
                 return
             namespace = self.get_attribute(union, NAMESPACE)
-            name = namspace + '__' + name
+            name = namespace + '__' + name
             name.replace('/', '_')
             name.replace('.', '_')
             dtyp = idc.get_struc_id(name)
