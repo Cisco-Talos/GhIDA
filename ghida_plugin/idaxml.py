@@ -40,7 +40,9 @@ import idautils
 import idc
 import datetime
 import os
+import sys
 import time
+
 from xml.etree import cElementTree
 
 
@@ -242,7 +244,7 @@ class XmlExporter(IdaXml):
         self.inf = ida_idaapi.get_inf_structure()
         self.min_ea = self.inf.min_ea
         self.max_ea = self.inf.max_ea
-        self.cbsize = (ida_idp.ph_get_cnbits() + 7) / 8
+        self.cbsize = int((ida_idp.ph_get_cnbits() + 7) / 8)
         self.processor = str.upper(ida_idp.get_idp_name())
         self.batch = ida_kernwin.cvar.batch
 
@@ -266,7 +268,7 @@ class XmlExporter(IdaXml):
         idc.msg("\n------------------------------------------------" +
                 "-----------")
         idc.msg("\nExporting XML <PROGRAM> document ....")
-        begin = time.clock()
+        begin = time.time()
 
         self.write_xml_declaration()
         ret_val = self.export_program()
@@ -462,7 +464,7 @@ class XmlExporter(IdaXml):
         Args:
             start: Floating-point value representing start time in seconds.
         """
-        idc.msg('CPU time: %6.4f' % (time.clock() - start))
+        idc.msg('CPU time: %6.4f' % (time.time() - start))
 
     def end_element(self, tag, newline=True):
         """
@@ -510,7 +512,7 @@ class XmlExporter(IdaXml):
         Exports marked location descriptions as BOOKMARK elements.
         """
         found = False
-        timer = time.clock()
+        timer = time.time()
         for slot in range(0, 1025):
             address = idc.get_bookmark(slot)
             description = idc.get_bookmark_desc(slot)
@@ -571,7 +573,7 @@ class XmlExporter(IdaXml):
         if (addr == BADADDR):
             return
         self.update_status(CODE)
-        timer = time.clock()
+        timer = time.time()
         data = ida_bytes.next_that(addr, self.max_ea, idc.is_data)
         unknown = ida_bytes.next_unknown(addr, self.max_ea)
         self.start_element(CODE, True)
@@ -641,7 +643,7 @@ class XmlExporter(IdaXml):
         if (addr == BADADDR):
             return
         self.update_status(COMMENTS)
-        timer = time.clock()
+        timer = time.time()
         self.start_element(COMMENTS, True)
         while (addr != BADADDR):
             cmt = idc.get_cmt(addr, False)
@@ -677,7 +679,7 @@ class XmlExporter(IdaXml):
             addr = ida_bytes.next_that(addr, self.max_ea, idc.is_data)
         if (addr == BADADDR):
             return
-        timer = time.clock()
+        timer = time.time()
         self.update_status(DATA)
         self.start_element(DATA, True)
         while (addr != BADADDR):
@@ -730,7 +732,7 @@ class XmlExporter(IdaXml):
         if idc.get_struc_qty() == 0:
             return
         self.update_status(DATATYPES)
-        timer = time.clock()
+        timer = time.time()
         self.start_element(DATATYPES, True)
         self.export_structures()
         self.export_enums()
@@ -927,7 +929,7 @@ class XmlExporter(IdaXml):
         if functions == None:
             return
         self.update_status(FUNCTIONS)
-        timer = time.clock()
+        timer = time.time()
         self.start_element(FUNCTIONS, True)
         for addr in functions:
             function = ida_funcs.get_func(addr)
@@ -1013,7 +1015,7 @@ class XmlExporter(IdaXml):
         and manual instructions and operands.
         """
         self.update_status(MARKUP)
-        timer = time.clock()
+        timer = time.time()
         self.start_element(MARKUP, True)
         addr = self.min_ea
         while addr != BADADDR:
@@ -1124,6 +1126,7 @@ class XmlExporter(IdaXml):
             if ((has_val == False) or (next_address != addr + 1) or
                     (next_address == end)):
                 if length > 0:
+                    length = int(length)
                     offset = binfile.tell()
                     ida_loader.base2file(binfile.get_fp(), offset, startaddr,
                                          startaddr + length)
@@ -1147,7 +1150,7 @@ class XmlExporter(IdaXml):
         if (nsegs == 0):
             return
         self.update_status(MEMORY_MAP)
-        timer = time.clock()
+        timer = time.time()
         binfilename = ''
         if (self.options.MemoryContent.checked == True):
             (binfilename, ext) = os.path.splitext(self.filename)
@@ -1178,9 +1181,9 @@ class XmlExporter(IdaXml):
             elif idc.is_code(f) == True:
                 insn = ida_ua.insn_t()
                 ida_ua.decode_insn(insn, addr)
-                target = insn.ops[op].value - ri.tdelta + ri.base
+                target = (insn.ops[op].value - ri.tdelta + ri.base) & ((1 << 64) - 1)
             elif idc.is_data(f) == True:
-                target = self.get_data_value(addr) - ri.tdelta + ri.base
+                target = (self.get_data_value(addr) - ri.tdelta + ri.base) & ((1 << 64) - 1)
             else:
                 return
         else:
@@ -1221,6 +1224,8 @@ class XmlExporter(IdaXml):
         self.write_attribute(NAME, segname)
         self.write_address_attribute(START_ADDR, seg.start_ea)
         length = (seg.end_ea - seg.start_ea) * self.cbsize
+
+        length = int(length)
         self.write_numeric_attribute(LENGTH, length)
         perms = ""
         if (seg.perm != 0):
@@ -1247,7 +1252,7 @@ class XmlExporter(IdaXml):
         """
         # output the PROGRAM element
         self.update_status(PROGRAM)
-        timer = time.clock()
+        timer = time.time()
         self.start_element(PROGRAM)
         self.write_attribute(NAME, idc.get_root_filename())
         self.write_attribute(EXE_PATH, idc.get_input_file_path())
@@ -1257,7 +1262,7 @@ class XmlExporter(IdaXml):
         # check for presence of INPUT_MD5 netnode
         md5 = ida_netnode.netnode(INPUT_MD5)
         if md5 == BADNODE:
-            input_md5 = idc.retrieve_input_file_md5()
+            input_md5 = idc.retrieve_input_file_md5().hex()
         else:
             input_md5 = md5.supval(ida_nalt.RIDX_MD5)
         if input_md5 != None:
@@ -1390,7 +1395,7 @@ class XmlExporter(IdaXml):
         if (nepts == 0):
             return
         self.update_status(PROGRAM_ENTRY_POINTS)
-        timer = time.clock()
+        timer = time.time()
         self.start_element(PROGRAM_ENTRY_POINTS, True)
         for i in range(nepts):
             self.start_element(PROGRAM_ENTRY_POINT)
@@ -1415,7 +1420,7 @@ class XmlExporter(IdaXml):
         if has_segregareas == False:
             return
         self.update_status(REGISTER_VALUES)
-        timer = time.clock()
+        timer = time.time()
         self.start_element(REGISTER_VALUES, True)
         sr = ida_segregs.sreg_range_t()
         for j in range(first, last):
@@ -1651,7 +1656,7 @@ class XmlExporter(IdaXml):
             return
         self.update_status(SYMBOL_TABLE)
         self.start_element(SYMBOL_TABLE, True)
-        timer = time.clock()
+        timer = time.time()
         while addr != BADADDR:
             # only export meaningful names (user and auto)
             f = idc.get_full_flags(addr)
@@ -1680,8 +1685,9 @@ class XmlExporter(IdaXml):
             cmt: String containing type info.
         """
         # older versions of IDAPython returned a '\n' at end of cmt
-        while cmt[-1] == '\n':
-            cmt = cmt[:-1]
+        if(len(cmt) > 0):
+            while cmt[-1] == '\n':
+                cmt = cmt[:-1]
         self.write_comment_element(TYPEINFO_CMT, cmt)
 
     def export_user_memory_reference(self, addr):
@@ -2307,13 +2313,13 @@ class XmlImporter(IdaXml):
             if event in self.callbacks:
                 if element.tag in self.callbacks[event]:
                     if event == 'start':
-                        self.timers[element.tag] = time.clock()
+                        self.timers[element.tag] = time.time()
                     self.callbacks[event][element.tag](element)
                     if event == 'end':
                         element.clear()
             if event == 'end':
                 n += 1
-        end = time.clock()
+        end = time.time()
         ida_kernwin.hide_wait_box()
         self.display_summary('Import' if self.plugin else "Load")
         idc.msg('\nXML Elements parsed: ' + str(n) + '\n\n')
@@ -2391,7 +2397,7 @@ class XmlImporter(IdaXml):
             return
         if element.tag in self.timers:
             idc.msg('elapsed time: %.4f' %
-                    (time.clock() - self.timers[element.tag]))
+                    (time.time() - self.timers[element.tag]))
 
     def display_total_time(self, element):
         """
@@ -2402,7 +2408,7 @@ class XmlImporter(IdaXml):
         """
         TOTAL = 'Total '
         idc.msg('\n%35selapsed time: %.4f' %
-                (TOTAL, time.clock() - self.timers[PROGRAM]))
+                (TOTAL, time.time() - self.timers[PROGRAM]))
 
     def get_address(self, element, attr):
         """
@@ -2473,7 +2479,7 @@ class XmlImporter(IdaXml):
             Integer representing the number of 8-bit bytes in an
             addressable codebyte.
         """
-        return (ida_idp.ph_get_cnbits() + 7) / 8
+        return int((ida_idp.ph_get_cnbits() + 7) / 8)
 
     def get_datatype_flags(self, datatype, size):
         """
@@ -2675,7 +2681,9 @@ class XmlImporter(IdaXml):
                     break
         except:
             msg = "** Exception occurred in import_bookmark **"
-            print("\n" + msg + "\n", sys.exc_type, sys.exc_value)
+            print(msg)
+            excinfo = sys.exc_info()
+            print(excinfo)
 
     def import_cmts(self, element, sid, typ):
         """
@@ -3003,7 +3011,9 @@ class XmlImporter(IdaXml):
                 self.import_register_var(register_var, func)
         except:
             msg = "** Exception occurred in import_function **"
-            print("\n" + msg + "\n", sys.exc_type, sys.exc_value)
+            print(msg)
+            excinfo = sys.exc_info()
+            print(excinfo)
 
     def import_function_def(self, function_def):
         # import_function_def: NOT IMPLEMENTED
@@ -3466,7 +3476,7 @@ class XmlImporter(IdaXml):
             if self.has_attribute(structure, NAMESPACE) == False:
                 return
             namespace = self.get_attribute(structure, NAMESPACE)
-            name = namspace + '__' + name
+            name = namespace + '__' + name
             name.replace('/', '_')
             name.replace('.', '_')
             dtyp = idc.get_struc_id(name)
@@ -3535,7 +3545,7 @@ class XmlImporter(IdaXml):
             if self.has_attribute(union, NAMESPACE) == False:
                 return
             namespace = self.get_attribute(union, NAMESPACE)
-            name = namspace + '__' + name
+            name = namespace + '__' + name
             name.replace('/', '_')
             name.replace('.', '_')
             dtyp = idc.get_struc_id(name)

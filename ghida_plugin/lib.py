@@ -28,7 +28,7 @@ import sys
 import tempfile
 import time
 
-import Queue
+import queue as Queue
 import random
 import requests
 import string
@@ -41,8 +41,8 @@ import idaapi
 import idautils
 import idc
 
-from idaxml import Cancelled
-from idaxml import XmlExporter
+from .idaxml import Cancelled
+from .idaxml import XmlExporter
 
 # This value can be changed
 TIMEOUT = 300
@@ -72,7 +72,8 @@ def create_random_filename():
     if not GLOBAL_FILENAME:
         letters = [random.choice(string.ascii_letters) for i in range(5)]
         random_string = ''.join(letters)
-        GLOBAL_FILENAME = "%s_%s" % (idautils.GetInputFileMD5(), random_string)
+        GLOBAL_FILENAME = "%s_%s" % (
+            idautils.GetInputFileMD5().hex(), random_string)
     return GLOBAL_FILENAME
 
 
@@ -133,7 +134,9 @@ def export_ida_project_to_xml():
     except Exception:
         ida_kernwin.hide_wait_box()
         msg = "GhIDA:: [!] Exception occurred: XML Exporter failed!"
-        print("\n" + msg + "\n", sys.exc_type, sys.exc_value)
+        print(msg)
+        excinfo = sys.exc_info()
+        print(excinfo)
         idc.warning(msg)
     finally:
         xml.cleanup()
@@ -225,6 +228,7 @@ def ghidra_headless(address,
                "Temp",
                "-import",
                xml_file_path,
+               '-readOnly',
                '-scriptPath',
                ghidra_plugins_path,
                '-postScript',
@@ -247,7 +251,7 @@ def ghidra_headless(address,
 
         p = subprocess.Popen(cmd,
                              stdout=subprocess.PIPE,
-                             stderr=subprocess.STDOUT,
+                             stderr=subprocess.PIPE,
                              **kwargs)
 
         stop = False
@@ -260,14 +264,17 @@ def ghidra_headless(address,
             counter += 1
             subprocess.Popen.poll(p)
 
+            print(p.returncode)
+
             # Process terminated
             if p.returncode is not None:
+                print("GhIDA:: [DEBUG] ", str(p.stdout.read(), 'utf-8'))
                 stop = True
                 print("GhIDA:: [INFO] Ghidra analysis completed!")
                 continue
 
             # User terminated action
-            if idaapi.wasBreak():
+            if idaapi.user_cancelled():
                 # Termiante the process!
                 terminate_process(p.pid)
                 stop = True
@@ -364,7 +371,7 @@ def ghidraaas_checkin(bin_file_path, filename, ghidra_server_url):
     """
     idaapi.show_wait_box("Connecting to Ghidraaas. Sending bytes file...")
     try:
-        md5_hash = idautils.GetInputFileMD5()
+        md5_hash = idautils.GetInputFileMD5().hex()
         queue = Queue.Queue()
 
         my_args = (bin_file_path, filename, ghidra_server_url, md5_hash, queue)
@@ -380,7 +387,7 @@ def ghidraaas_checkin(bin_file_path, filename, ghidra_server_url):
             counter += 1
 
             # User terminated action
-            if idaapi.wasBreak():
+            if idaapi.user_cancelled():
                 stop = True
                 print("GhIDA:: [!] Check-in interrupted.")
                 continue
@@ -445,7 +452,7 @@ def ghidraaas_checkout(ghidra_server_url):
     idaapi.show_wait_box(
         "Connecting to Ghidraaas. Removing temporary files...")
     try:
-        md5_hash = idautils.GetInputFileMD5()
+        md5_hash = idautils.GetInputFileMD5().hex()
         aargs = (md5_hash, ghidra_server_url)
 
         t1 = threading.Thread(target=ghidraaas_checkout_thread,
@@ -459,7 +466,7 @@ def ghidraaas_checkout(ghidra_server_url):
             time.sleep(SLEEP_LENGTH)
             counter += 1
 
-            if idaapi.wasBreak():
+            if idaapi.user_cancelled():
                 print("GhIDA:: [!] Check-out interrupted.")
                 stop = True
                 continue
@@ -564,7 +571,7 @@ def ghidraaas_decompile(address,
         "Connecting to Ghidraaas. Decompiling function %s" % address)
 
     try:
-        md5_hash = idautils.GetInputFileMD5()
+        md5_hash = idautils.GetInputFileMD5().hex()
         queue = Queue.Queue()
 
         aargs = (address, xml_file_path, bin_file_path,
@@ -580,7 +587,7 @@ def ghidraaas_decompile(address,
             time.sleep(SLEEP_LENGTH)
             counter += 1
 
-            if idaapi.wasBreak():
+            if idaapi.user_cancelled():
                 print("GhIDA:: [!] decompilation interrupted.")
                 stop = True
                 continue

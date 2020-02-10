@@ -24,13 +24,13 @@
 import ida_kernwin
 import idaapi
 
-from constants import COMMENT_FORM_TEXT
-from constants import RENAME_FORM_TEXT
-from constants import SETTINGS_FORM_TEXT
+from .constants import COMMENT_FORM_TEXT
+from .constants import RENAME_FORM_TEXT
+from .constants import SETTINGS_FORM_TEXT
 
 # from utility import get_address_for_symbol
-from utility import from_ghidra_to_ida_syntax_conversion
-from utility import from_ida_to_ghidra_syntax_conversion
+from .utility import from_ghidra_to_ida_syntax_conversion
+from .utility import from_ida_to_ghidra_syntax_conversion
 
 
 USE_GHIDRAAAS_OPTION_CONST = 11

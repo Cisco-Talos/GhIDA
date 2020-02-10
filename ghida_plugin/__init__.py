@@ -23,13 +23,13 @@
 
 ghida_vv = "0.1"
 
-from comments_cache import *
-from config import *
-from constants import *
-from decompiled_cache import *
-from idaxml import SYMBLE_TABLE_DICT
-from lib import *
-from ui import *
-from utility import *
+from .comments_cache import *
+from .config import *
+from .constants import *
+from .decompiled_cache import *
+from .idaxml import SYMBLE_TABLE_DICT
+from .lib import *
+from .ui import *
+from .utility import *
 
 SYMBLE_TABLE_DICT = dict()

@@ -27,7 +27,7 @@ import re
 import idaapi
 import idc
 
-from idaxml import SYMBLE_TABLE_DICT
+from .idaxml import SYMBLE_TABLE_DICT
 
 PLUGIN_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__)))
 
@@ -262,8 +262,8 @@ def get_current_address():
         return None
 
     # Get function start address
-    ea = func.startEA
-    ea = hex(ea).strip("0x").strip("L")
+    ea = func.start_ea
+    ea = hex(ea).replace("0x", "").strip("L")
     return ea
 
 
@@ -278,7 +278,7 @@ def convert_address(ca):
         return None
 
     # Get function start address
-    ea = func.startEA
+    ea = func.start_ea
     ea = hex(ea).strip("0x").strip("L")
     return ea
 

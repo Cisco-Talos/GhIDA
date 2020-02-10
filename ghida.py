@@ -623,14 +623,14 @@ class DisasmsHandler(idaapi.action_handler_t):
 
 class DisasmsHooks(idaapi.UI_Hooks):
 
-    def finish_populating_tform_popup(self, form, popup):
+    def finish_populating_widget_popup(self, form, popup):
         # TODO - Attach to the functions view.
-        # if idaapi.get_tform_type(form) == idaapi.BWN_FUNCS:
+        # if idaapi.get_widget_type(form) == idaapi.BWN_FUNCS:
         #     idaapi.attach_action_to_popup(
         #         form, popup, "my:disasmsaction", None)
 
         # Attach to the disassembler view only
-        if idaapi.get_tform_type(form) == idaapi.BWN_DISASMS:
+        if idaapi.get_widget_type(form) == idaapi.BWN_DISASMS:
             idaapi.attach_action_to_popup(
                 form, popup, "my:disasmsaction", None)
             idaapi.attach_action_to_popup(
@@ -647,7 +647,7 @@ def register_handlers():
 
     # Load a custom icon
     icon_path = gl.plugin_resource("ghida.png")
-    icon_data = str(open(icon_path, "rb").read())
+    icon_data = open(icon_path, "rb").read()
     icon_ghida = idaapi.load_custom_icon(data=icon_data)
 
     idaapi.register_action(idaapi.action_desc_t(
@@ -728,7 +728,7 @@ def load_configuration():
     print("GHIDA_CONF.load_save_cached_comments",
           GHIDA_CONF.load_save_cached_comments)
 
-    md5 = idautils.GetInputFileMD5()
+    md5 = idautils.GetInputFileMD5().hex()
 
     # Initalize the cache (and load cached objects)
     DECOMPILED_CACHE = gl.DecompiledCache(
@@ -752,7 +752,7 @@ def register_actions_and_handlers_decompile_view():
     """
     # Load a custom icon
     icon_path = gl.plugin_resource("ghida.png")
-    icon_data = str(open(icon_path, "rb").read())
+    icon_data = open(icon_path, "rb").read()
     icon_ghida = idaapi.load_custom_icon(data=icon_data)
 
     decompiler_widget = idaapi.find_widget('Decompiled Function')
@@ -893,7 +893,8 @@ def decompile_function_wrapper(cache_only=False, do_show=True):
         # Check if the program has been rebased
         if GHIDA_CONF.image_base != image_base:
             print(
-                "GhIDA:: [DEBUG] program has been rebased. Invalidating caches.")
+                "GhIDA:: [DEBUG] program has been rebased. "
+                "Invalidating caches.")
             DECOMPILED_CACHE.invalidate_cache()
             COMMENTS_CACHE.invalidate_cache()
             gl.force_export_XML_file()
@@ -976,10 +977,10 @@ def decompile_function_wrapper(cache_only=False, do_show=True):
         print("GhIDA:: [!] Decompilation wrapper error")
         idaapi.warning("GhIDA decompilation wrapper error")
 
-
 # ------------------------------------------------------------
 #   GHIDRA DECOMPILER PLUGIN
 # ------------------------------------------------------------
+
 
 class GhIDADecompiler_t(idaapi.plugin_t):
     comment = "GhIDA Decompiler for IDA Pro"
