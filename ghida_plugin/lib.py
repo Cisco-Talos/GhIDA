@@ -264,8 +264,6 @@ def ghidra_headless(address,
             counter += 1
             subprocess.Popen.poll(p)
 
-            print(p.returncode)
-
             # Process terminated
             if p.returncode is not None:
                 print("GhIDA:: [DEBUG] ", str(p.stdout.read(), 'utf-8'))
