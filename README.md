@@ -41,11 +41,11 @@ More information are provided in the **Features description** section.
 
 ## Requirements
 
-* IDA Pro 7.x
+* IDA Pro 7.x and Python2 or IDA Pro 7.4 and Python3
 
-* Python2, `requests` and `pygments` installed.
+* `requests` and `pygments` installed.
 
-* A local installation of [Ghidra](https://ghidra-sre.org/InstallationGuide.html#Install) or the [Ghidraaas](https://github.com/Cisco-Talos/Ghidraaas).
+* A local installation of [Ghidra](https://ghidra-sre.org/InstallationGuide.html#Install) or [Ghidraaas](https://github.com/Cisco-Talos/Ghidraaas).
 
 
 ## Installation
@@ -54,11 +54,14 @@ More information are provided in the **Features description** section.
 
 * IDA Pro 7.x
 
-* Install `requests` and `pygments` in Python 2.
+* Install `requests` and `pygments` in Python 2 or Python 3.
 ```
 pip install requests
 pip install pygments
 ```
+
+* Download the latest release from the [release](https://github.com/Cisco-Talos/GhIDA/releases) page.
+
 * Copy `ghida.py` and the `ghida_plugin` folder in the `plugins` folder of your IDA Pro installation.
 
 * The first time GhIDA is launched (Ctrl+Alt+D or *Edit* > *Plugins* > *GhIDA Decompiler*), a settings form is displayed, as shown in the previous image.
