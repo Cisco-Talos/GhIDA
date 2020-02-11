@@ -972,9 +972,9 @@ def decompile_function_wrapper(cache_only=False, do_show=True):
             DECOMP_VIEW.add_comments(comment_list)
 
         return
-    except Exception:
-        print("GhIDA:: [!] Decompilation wrapper error")
-        idaapi.warning("GhIDA decompilation wrapper error")
+    except Exception as e:
+        print("GhIDA:: [!] Decompilation wrapper error: {}".format(e))
+        idaapi.warning("GhIDA decompilation wrapper error {}".format(e))
 
 
 # ------------------------------------------------------------
