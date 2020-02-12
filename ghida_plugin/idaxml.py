@@ -2065,8 +2065,8 @@ class XmlExporter(IdaXml):
         if ida_idp.ph_get_id() == ida_idp.PLFM_C166:
             return False
         s = ida_segment.getseg(addr)
-        if s.startEA in self.overlay:
-            return self.overlay[s.startEA]
+        if s.start_ea in self.overlay:
+            return self.overlay[s.start_ea]
         return False
 
     def is_signed_data(self, flags):
@@ -3391,7 +3391,7 @@ class XmlImporter(IdaXml):
             datatype = self.get_attribute(register_var, DATATYPE)
         if self.has_attribute(register_var, DATATYPE_NAMESPACE):
             namespace = self.get_attribute(register_var, DATATYPE_NAMESPACE)
-        idc.define_local_var(func.startEA, func.endEA, reg, name)
+        idc.define_local_var(func.start_ea, func.endEA, reg, name)
         self.update_counter(REGISTER_VAR)
 
     def import_stack_frame(self, stack_frame, func):
