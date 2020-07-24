@@ -42,7 +42,8 @@ More information are provided in the **Features description** section.
 ## Requirements
 
 * IDA Pro 7.x and Python2 or IDA Pro 7.4 and Python3
-
+   * Not compatible with IDA Home
+   
 * `requests` and `pygments` installed.
 
 * A local installation of [Ghidra](https://ghidra-sre.org/InstallationGuide.html#Install) or [Ghidraaas](https://github.com/Cisco-Talos/Ghidraaas).
