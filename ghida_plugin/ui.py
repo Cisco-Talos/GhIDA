@@ -190,7 +190,7 @@ class GhIDASettingsForm(ida_kernwin.Form):
             self.EnableField(self.GhidraaasURL, False)
 
         # USE GHIDRAAAS OPTION
-        if fid == USE_GHIDRAAAS_OPTION_CONST:
+        if fid == self.GRe.id:
             if self.ghidraaas_selected:
                 self.EnableField(self.GhidraInstallationPath, True)
                 self.EnableField(self.GhidraaasURL, False)
@@ -202,14 +202,14 @@ class GhIDASettingsForm(ida_kernwin.Form):
                 self.ghidraaas_selected = True
 
         # SAVE / LOAD CACHE
-        if fid == SAVE_CACHE_OPTION_CONST:
+        if fid == self.GRe2.id:
             if self.save_cache:
                 self.save_chache = False
             else:
                 self.save_cache = True
 
         # DO NOT SHOW DIALOG
-        if fid == DO_NOT_SHOW_DIALOG_CONST:
+        if fid == self.GRe1.id:
             if self.show_dialog:
                 self.show_dialog = False
             else:
