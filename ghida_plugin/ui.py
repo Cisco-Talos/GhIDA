@@ -33,11 +33,6 @@ from .utility import from_ghidra_to_ida_syntax_conversion
 from .utility import from_ida_to_ghidra_syntax_conversion
 
 
-USE_GHIDRAAAS_OPTION_CONST = 11
-SAVE_CACHE_OPTION_CONST = 4
-DO_NOT_SHOW_DIALOG_CONST = 7
-
-
 # ------------------------------------------------------------
 #   SYMBOLS HIGHLIGHTING
 # ------------------------------------------------------------
