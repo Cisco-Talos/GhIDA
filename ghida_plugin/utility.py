@@ -127,28 +127,28 @@ def from_ghidra_to_ida_syntax_conversion(symbol):
     if re.match(r"FUN_[0-9a-fA-F]{1,16}", symbol):
         hex_addr = symbol.split("FUN_")[1].lstrip('0')
         symbol = "sub_" + hex_addr.upper()
-        print("GhIDA:: [DEBUG] %s" % symbol)
+        # print("GhIDA:: [DEBUG] %s" % symbol)
         return symbol
 
     # Special case for symbols named DAT_ by Ghidra
     elif re.match(r"DAT_[0-9a-fA-F]{1,16}", symbol):
         hex_addr = symbol.split("DAT_")[1].lstrip('0')
         symbol = "unk_" + hex_addr.upper()
-        print("GhIDA:: [DEBUG] %s" % symbol)
+        # print("GhIDA:: [DEBUG] %s" % symbol)
         return symbol
 
     # Special case for symbols named DAT_ by Ghidra
     elif re.match(r"_DAT_[0-9a-fA-F]{1,16}", symbol):
         hex_addr = symbol.split("_DAT_")[1].lstrip('0')
         symbol = "unk_" + hex_addr.upper()
-        print("GhIDA:: [DEBUG] %s" % symbol)
+        # print("GhIDA:: [DEBUG] %s" % symbol)
         return symbol
 
     # Special case for hex values / addresses in Ghidra
     elif re.match(r"0x[0-9a-fA-F]{1,16}", symbol):
         hex_addr = symbol.replace('0x', '')
         symbol = hex_addr.upper() + 'h'
-        print("GhIDA:: [DEBUG] %s" % symbol)
+        # print("GhIDA:: [DEBUG] %s" % symbol)
         return symbol
 
     return None
@@ -172,7 +172,7 @@ def from_ida_to_ghidra_syntax_conversion(symbol):
         elif len(hex_addr) <= 16:
             hex_addr = '0' * (16 - len(hex_addr)) + hex_addr
         symbol = "FUN_" + hex_addr.lower()
-        print("GhIDA:: [DEBUG] %s" % symbol)
+        # print("GhIDA:: [DEBUG] %s" % symbol)
         return symbol
 
     # Special case for symbols named DAT_ by IDA
@@ -183,14 +183,14 @@ def from_ida_to_ghidra_syntax_conversion(symbol):
         elif len(hex_addr) <= 16:
             hex_addr = '0' * (16 - len(hex_addr)) + hex_addr
         symbol = "DAT_" + hex_addr.lower()
-        print("GhIDA:: [DEBUG] %s" % symbol)
+        # print("GhIDA:: [DEBUG] %s" % symbol)
         return symbol
 
     # Special case for hex values / addresses in IDA
     elif re.match(r"[0-9a-fA-F]{1,16}h", symbol):
         hex_addr = symbol.replace('h', '')
         symbol = '0x' + hex_addr.lower()
-        print("GhIDA:: [DEBUG] %s" % symbol)
+        # print("GhIDA:: [DEBUG] %s" % symbol)
         return symbol
 
     return None
@@ -231,10 +231,10 @@ def updated_symbol_name_for_address(symbol_name, address, new_symbol_name):
         address = SYMBLE_TABLE_DICT[symbol_name]
         del SYMBLE_TABLE_DICT[symbol_name]
         SYMBLE_TABLE_DICT[new_symbol_name] = address
-        print("GhIDA:: [DEBUG] updated symbol name in SYMBLE_TABLE_DICT")
+        # print("GhIDA:: [DEBUG] updated symbol name in SYMBLE_TABLE_DICT")
     else:
         SYMBLE_TABLE_DICT[new_symbol_name] = address
-        print("GhIDA:: [DEBUG] Created new symbol name in SYMBLE_TABLE_DICT")
+        # print("GhIDA:: [DEBUG] Created new symbol name in SYMBLE_TABLE_DICT")
     return
 
 

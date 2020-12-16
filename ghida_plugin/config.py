@@ -91,8 +91,8 @@ class GhidaConfiguration(object):
         Avoid the user to always insert the information.
         """
         if not os.path.isfile(self.__config_path):
-            print("GhIDA:: [DEBUG] Configuration not found." +
-                  "Using default values.")
+            # print("GhIDA:: [DEBUG] Configuration not found." +
+            #       "Using default values.")
             return
 
         # Read configuration from the file

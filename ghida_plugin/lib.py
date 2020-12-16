@@ -108,7 +108,7 @@ def export_ida_project_to_xml():
     global EXPORT_XML_FILE
 
     xml_file_path, bin_file_path = get_ida_exported_files()
-    print("GhIDA:: [DEBUG] EXPORT_XML_FILE: %s" % EXPORT_XML_FILE)
+    # print("GhIDA:: [DEBUG] EXPORT_XML_FILE: %s" % EXPORT_XML_FILE)
 
     # Check if files are alredy available
     if os.path.isfile(xml_file_path) and \
@@ -119,7 +119,7 @@ def export_ida_project_to_xml():
     EXPORT_XML_FILE = False
 
     # Otherwise call the XML exporter IDA plugin
-    print("GhIDA:: [DEBUG] Exporting IDA project into XML format")
+    # print("GhIDA:: [DEBUG] Exporting IDA project into XML format")
     st = idc.set_ida_state(idc.IDA_STATUS_WORK)
     xml = XmlExporter(1)
 
@@ -266,7 +266,7 @@ def ghidra_headless(address,
 
             # Process terminated
             if p.returncode is not None:
-                print("GhIDA:: [DEBUG] ", str(p.stdout.read(), 'utf-8'))
+                # print("GhIDA:: [DEBUG] ", str(p.stdout.read(), 'utf-8'))
                 stop = True
                 print("GhIDA:: [INFO] Ghidra analysis completed!")
                 continue
@@ -343,7 +343,7 @@ def ghidraaas_checkin_thread(bin_file_path,
         r = requests.post("%s/ida_plugin_checkin/" %
                           ghidra_server_url, files=bb, timeout=TIMEOUT)
 
-        print("GhIDA:: [DEBUG] Check-in status code: %d" % r.status_code)
+        # print("GhIDA:: [DEBUG] Check-in status code: %d" % r.status_code)
         if r.status_code == 200:
             print("GhIDA:: [INFO] Check-in completed")
             queue.put(True)
@@ -399,13 +399,13 @@ def ghidraaas_checkin(bin_file_path, filename, ghidra_server_url):
             # Thread terminated
             if not t1.isAlive():
                 stop = True
-                print("GhIDA:: [DEBUG] Thread terminated.")
+                # print("GhIDA:: [DEBUG] Thread terminated.")
                 continue
 
-        print("GhIDA:: [DEBUG] Joining check-in thread.")
+        # print("GhIDA:: [DEBUG] Joining check-in thread.")
         t1.join(0)
         q_result = queue.get_nowait()
-        print("GhIDA:: [DEBUG] Thread joined. Got queue result.")
+        # print("GhIDA:: [DEBUG] Thread joined. Got queue result.")
         idaapi.hide_wait_box()
         return q_result
 
@@ -431,7 +431,7 @@ def ghidraaas_checkout_thread(md5_hash, ghidra_server_url):
                           json=json.dumps(data),
                           timeout=TIMEOUT)
 
-        print("GhIDA:: [DEBUG] Check-out status code: %d" % r.status_code)
+        # print("GhIDA:: [DEBUG] Check-out status code: %d" % r.status_code)
         if r.status_code != 200:
             print("GhIDA:: [!] Check-out error: %s (%s)" % (r.reason, r.text))
 
@@ -476,12 +476,12 @@ def ghidraaas_checkout(ghidra_server_url):
 
             if not t1.isAlive():
                 stop = True
-                print("GhIDA:: [DEBUG] Thread terminated.")
+                # print("GhIDA:: [DEBUG] Thread terminated.")
                 continue
 
-        print("GhIDA:: [DEBUG] Joining check-out thread.")
+        # print("GhIDA:: [DEBUG] Joining check-out thread.")
         t1.join(0)
-        print("GhIDA:: [DEBUG] Thread joined")
+        # print("GhIDA:: [DEBUG] Thread joined")
         idaapi.hide_wait_box()
         return
 
@@ -521,7 +521,7 @@ def ghidraaas_decompile_thread(address,
         r = requests.post("%s/ida_plugin_get_decompiled_function/" %
                           ghidra_server_url, files=bb, timeout=TIMEOUT)
 
-        print("GhIDA:: [DEBUG] Decompilation status code: %d" % r.status_code)
+        # print("GhIDA:: [DEBUG] Decompilation status code: %d" % r.status_code)
 
         if r.status_code == 200:
             print("GhIDA:: [INFO] Decompilation completed")
@@ -597,13 +597,13 @@ def ghidraaas_decompile(address,
 
             if not t1.isAlive():
                 stop = True
-                print("GhIDA:: [DEBUG] Thread terminated.")
+                # print("GhIDA:: [DEBUG] Thread terminated.")
                 continue
 
-        print("GhIDA:: [DEBUG] Joining decompilation thread.")
+        # print("GhIDA:: [DEBUG] Joining decompilation thread.")
         t1.join(0)
         q_result = queue.get_nowait()
-        print("GhIDA:: [DEBUG] Thread joined. Got queue result.")
+        # print("GhIDA:: [DEBUG] Thread joined. Got queue result.")
         idaapi.hide_wait_box()
         return q_result
 
@@ -627,7 +627,7 @@ def decompile_function(address,
     Decompile function at address @address
     """
     try:
-        print("GhIDA:: [DEBUG] Decompiling %s" % address)
+        # print("GhIDA:: [DEBUG] Decompiling %s" % address)
 
         xml_file_path, bin_file_path = export_ida_project_to_xml()
 

@@ -41,18 +41,20 @@ More information are provided in the **Features description** section.
 
 ## Requirements
 
-* IDA Pro 7.x and Python2 or IDA Pro 7.4 and Python3
+* GhIDA has a Python 2 and Python 3 version:
+    * For Python 2 requires IDA Pro 7.x
+    * For Python 3 requires IDA Pro >= 7.4
+    * GhIDA is not compatible with *IDA Home*
 
-* `requests` and `pygments` installed.
+* `requests` and `pygments` Python (2 or 3) packages
 
 * A local installation of [Ghidra](https://ghidra-sre.org/InstallationGuide.html#Install) or [Ghidraaas](https://github.com/Cisco-Talos/Ghidraaas).
+    * Use Ghidra version 9.1.2
 
 
 ## Installation
 
 ![Decompiler settings image](img/ghida_config.png)
-
-* IDA Pro 7.x
 
 * Install `requests` and `pygments` in Python 2 or Python 3.
 ```
@@ -66,11 +68,12 @@ pip install pygments
 
 * The first time GhIDA is launched (Ctrl+Alt+D or *Edit* > *Plugins* > *GhIDA Decompiler*), a settings form is displayed, as shown in the previous image.
     * If you want to use GhIDA with a local installation of Ghidra:
-        * [Install Ghidra](https://ghidra-sre.org/InstallationGuide.html#Install)
-        * Fill the *installation path* (path of the `ghidra_9.x.x` folder)
+        * [Download](https://ghidra-sre.org/releaseNotes_9.2.html) and [install Ghidra 9.1.2](https://ghidra-sre.org/InstallationGuide.html#Install)
+        * Fill the *installation path* (path of the `ghidra_9.1.2_PUBLIC` folder)
 
     * Otherwise, if you want to use Ghidraaas:
-        * Launch a local instance of the server using the [Ghidraaas](https://github.com/Cisco-Talos/Ghidraaas) docker container, and insert `http://0.0.0.0:8080/ghidra/api`.
+        * Launch a local instance of the server using the [Ghidraaas](https://github.com/Cisco-Talos/Ghidraaas) docker container
+        * Check the *Use Ghidraaas server* box, and insert `http://0.0.0.0:8080/ghidra/api`.
 
 * To run GhIDA:
     * Ctrl+Alt+D
@@ -96,7 +99,7 @@ By default, the disassembler view is synchronized with the decompiler view. By c
 **To disable the synchronization** (in the disassembler view) *right-click > Disable decompiler view synchronization*.
 
 ### Code syntax highlight
-Decompiled code is syntax-highlighted using the [pygments](http://pygments.org/) python library.
+Decompiled code is syntax-highlighted using the [pygments](http://pygments.org/) Python library.
 
 ### Code navigation
 In the decompiler view, double click (or *right-click > Goto*) over the name of a function to open it in the decompile and disassembler view.
@@ -136,7 +139,7 @@ To avoid retype GhIDA configuration each time IDA is opened, the configuration i
 
 ## Technical details
 
-Under the hood, GhIDA exports the IDA project using [idaxml.py](https://github.com/NationalSecurityAgency/ghidra/blob/master/GhidraBuild/IDAPro/Python/7xx/python/idaxml.py), a python library shipped with Ghidra, then it directly invokes Ghidra in headless mode without requiring any additional analysis. When GhIDA is called the first time, it uses `idaxml` to create two files: a XML file which embeds a program description according to the IDA analysis (including functions, data, symbols, comments, etc) and a `.bytes` file that contains the binary code of the program under analysis. While the binary file does not change during the time, the XML file is recreated each time the user invalidates the GhIDA cache, in order to take into account the updates the user did in the program analysis. To obtain the decompiled code, GhIDA uses [`FunctionDecompile.py`](ghida_plugin/ghidra_plugin/FunctionDecompile.py), a Ghidra plugin in python that exports to a JSON file the decompiled code of a selected function.
+Under the hood, GhIDA exports the IDA project using [idaxml.py](https://github.com/NationalSecurityAgency/ghidra/blob/master/GhidraBuild/IDAPro/Python/7xx/python/idaxml.py), a Python library shipped with Ghidra, then it directly invokes Ghidra in headless mode without requiring any additional analysis. When GhIDA is called the first time, it uses `idaxml` to create two files: a XML file which embeds a program description according to the IDA analysis (including functions, data, symbols, comments, etc) and a `.bytes` file that contains the binary code of the program under analysis. While the binary file does not change during the time, the XML file is recreated each time the user invalidates the GhIDA cache, in order to take into account the updates the user did in the program analysis. To obtain the decompiled code, GhIDA uses [`FunctionDecompile.py`](ghida_plugin/ghidra_plugin/FunctionDecompile.py), a Ghidra plugin in Python that exports to a JSON file the decompiled code of a selected function.
 
 Exporting the IDA's IDB and calling Ghidra in headless mode add a small overhead to the decompilation process, but it allows to abstract the low-level communication with the Ghidra decompiler.
 

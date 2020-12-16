@@ -312,7 +312,7 @@ class XmlExporter(IdaXml):
         self.display_summary('Export')
         idc.msg('\nDatabase exported to: ' + self.filename + '\n')
 
-        print("GhIDA:: [DEBUG] found %d symbols" % len(SYMBLE_TABLE_DICT))
+        # print("GhIDA:: [DEBUG] found %d symbols" % len(SYMBLE_TABLE_DICT))
         return
 
     # TODO: Test decompiler comments in batch and gui modes
@@ -1326,7 +1326,7 @@ class XmlExporter(IdaXml):
         # to Ghidra definitions. For x86 binaries, look at x86.ldefs
         # specifications.
         compiler_name = ida_typeinf.get_compiler_name(self.inf.cc.id)
-        print("GhIDA:: [DEBUG] compiler name: %s" % compiler_name)
+        # print("GhIDA:: [DEBUG] compiler name: %s" % compiler_name)
         new_compiler_name = ''
 
         if addr_model == '16-bit':
@@ -1378,7 +1378,7 @@ class XmlExporter(IdaXml):
                 print("GhIDA [!] unknown compiler not supported by Ghidra")
                 return False
 
-        print("GhIDA:: [DEBUG] new_compiler_name: %s" % new_compiler_name)
+        # print("GhIDA:: [DEBUG] new_compiler_name: %s" % new_compiler_name)
 
         # self.write_attribute(
         #     NAME, ida_typeinf.get_compiler_name(self.inf.cc.id))
@@ -1579,9 +1579,9 @@ class XmlExporter(IdaXml):
             regcmt = ida_struct.get_member_cmt(member.id, False)
             rptcmt = ida_struct.get_member_cmt(member.id, True)
             if regcmt != None:
-                regcmt = ida_lines.tag_remove(regcmt + " ", 0)
+                regcmt = ida_lines.tag_remove(regcmt + " ")
             if rptcmt != None:
-                rptrcmt = ida_lines.tag_remove(rptcmt + " ", 0)
+                rptrcmt = ida_lines.tag_remove(rptcmt + " ")
             has_regcmt = regcmt != None and len(regcmt) > 0
             has_rptcmt = rptcmt != None and len(rptcmt) > 0
             has_content = has_regcmt or has_rptcmt
@@ -2069,8 +2069,8 @@ class XmlExporter(IdaXml):
         if ida_idp.ph_get_id() == ida_idp.PLFM_C166:
             return False
         s = ida_segment.getseg(addr)
-        if s.startEA in self.overlay:
-            return self.overlay[s.startEA]
+        if s.start_ea in self.overlay:
+            return self.overlay[s.start_ea]
         return False
 
     def is_signed_data(self, flags):
@@ -3399,7 +3399,7 @@ class XmlImporter(IdaXml):
             datatype = self.get_attribute(register_var, DATATYPE)
         if self.has_attribute(register_var, DATATYPE_NAMESPACE):
             namespace = self.get_attribute(register_var, DATATYPE_NAMESPACE)
-        idc.define_local_var(func.startEA, func.endEA, reg, name)
+        idc.define_local_var(func.start_ea, func.end_ea, reg, name)
         self.update_counter(REGISTER_VAR)
 
     def import_stack_frame(self, stack_frame, func):
