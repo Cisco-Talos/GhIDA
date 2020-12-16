@@ -42,8 +42,8 @@ class CommentsCache:
                 file_id = "test"
             self.__cache_path = os.path.join(
                 tempfile.gettempdir(), COMMENTS_CACHE_FILE % file_id)
-            print("GhIDA:: [DEBUG] comments_cache_path: %s" %
-                  self.__cache_path)
+            # print("GhIDA:: [DEBUG] comments_cache_path: %s" %
+            #       self.__cache_path)
 
         except Exception:
             print("GhIDA:: [!] error while setting the comments cache")
@@ -51,14 +51,14 @@ class CommentsCache:
 
     def invalidate_cache(self):
         self.__comments_cache = dict()
-        print("GhIDA:: [DEBUG] comments cache is empty")
+        # print("GhIDA:: [DEBUG] comments cache is empty")
         return
 
     def add_comments_to_cache(self, address, comments_list):
         for c in comments_list:
             self.__comment_cache[address] = c
-        ll = len(comments_list)
-        print("GhIDA:: [DEBUG] addedd %d comments to cache (%s)" % ll)
+        # ll = len(comments_list)
+        # print("GhIDA:: [DEBUG] addedd %d comments to cache (%s)" % ll)
         return
 
     def add_comment_to_cache(self, address, line_num, comment):
@@ -70,17 +70,17 @@ class CommentsCache:
             if t[0] == line_num:
                 self.__comments_cache[address].remove(t)
         self.__comments_cache[address].append((line_num, comment))
-        print("GhIDA:: [DEBUG] addedd comments (%s, %d) to cache" %
-              (address, line_num))
-        print("GhIDA:: [DEBUG] %d elements in cache" %
-              len(self.__comments_cache))
+        # print("GhIDA:: [DEBUG] addedd comments (%s, %d) to cache" %
+        #       (address, line_num))
+        # print("GhIDA:: [DEBUG] %d elements in cache" %
+        #       len(self.__comments_cache))
         return
 
     def get_comments_cache(self, address):
         if address in self.__comments_cache:
-            print("GhIDA:: [DEBUG] comments cache hit (%s)" % address)
+            # print("GhIDA:: [DEBUG] comments cache hit (%s)" % address)
             return self.__comments_cache[address]
-        print("GhIDA:: [DEBUG] comments cache miss (%s)" % address)
+        # print("GhIDA:: [DEBUG] comments cache miss (%s)" % address)
         return None
 
     def dump_cache_to_json(self):
@@ -92,11 +92,11 @@ class CommentsCache:
 
     def load_cache_from_json(self):
         try:
-            print("GhIDA:: [DEBUG] loading comments cache from json")
+            # print("GhIDA:: [DEBUG] loading comments cache from json")
             with open(self.__cache_path) as f_in:
                 self.__comments_cache = json.load(f_in)
-                print("GhIDA:: [DEBUG] loaded %d comments from cache" % len(
-                    self.__comments_cache))
+                # print("GhIDA:: [DEBUG] loaded %d comments from cache" % len(
+                #     self.__comments_cache))
         except Exception:
             print("GhIDA:: [!] error while loading comments from %s" %
                   self.__cache_path)

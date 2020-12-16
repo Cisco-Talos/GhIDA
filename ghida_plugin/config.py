@@ -57,7 +57,7 @@ class GhidaConfiguration(object):
         """
         (plugin_path, _) = os.path.split(os.path.realpath(__file__))
         self.__ghidra_plugins_path = os.path.join(plugin_path, "ghidra_plugin")
-        
+
         if _is_unix():
             self.__ghidra_install_path = LP
             self.__ghidra_headless_path = os.path.join(
@@ -91,8 +91,8 @@ class GhidaConfiguration(object):
         Avoid the user to always insert the information.
         """
         if not os.path.isfile(self.__config_path):
-            print("GhIDA:: [DEBUG] Configuration not found." +
-                  "Using default values.")
+            # print("GhIDA:: [DEBUG] Configuration not found." +
+            #       "Using default values.")
             return
 
         # Read configuration from the file

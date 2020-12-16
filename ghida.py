@@ -72,7 +72,8 @@ class ShowDecompWindowHandler(idaapi.action_handler_t):
         if DECOMP_VIEW:
             DECOMP_VIEW.Show()
         else:
-            print("GhIDA:: [DEBUG] DECOMP_VIEW non existing")
+            # print("GhIDA:: [DEBUG] DECOMP_VIEW non existing")
+            pass
         return 1
 
     # This action is always available.
@@ -92,7 +93,7 @@ class GoToCustViewerHandler(idaapi.action_handler_t):
 
     # Say hello when invoked.
     def activate(self, ctx):
-        print("GhIDA:: [DEBUG] GoToCustViewerHandler HELLO")
+        # print("GhIDA:: [DEBUG] GoToCustViewerHandler HELLO")
         goto()
         return 1
 
@@ -109,7 +110,7 @@ class AddCommentCustViewerHandler(idaapi.action_handler_t):
 
     # Say hello when invoked.
     def activate(self, ctx):
-        print("GhIDA:: [DEBUG] AddCommentCustViewerHandler HELLO")
+        # print("GhIDA:: [DEBUG] AddCommentCustViewerHandler HELLO")
         DECOMP_VIEW.add_comment()
         return 1
 
@@ -126,7 +127,7 @@ class RenameCustViewerHandler(idaapi.action_handler_t):
 
     # Say hello when invoked.
     def activate(self, ctx):
-        print("GhIDA:: [DEBUG] RenameCustViewerHandler HELLO")
+        # print("GhIDA:: [DEBUG] RenameCustViewerHandler HELLO")
         DECOMP_VIEW.rename_symbol()
         return 1
 
@@ -194,7 +195,7 @@ class ScreenEAHook(ida_kernwin.View_Hooks):
 # ------------------------------------------------------------
 
 def goto(shift=False):
-    print("GhIDA:: [DEBUG] goto called")
+    # print("GhIDA:: [DEBUG] goto called")
 
     symbol = None
     ret = ida_kernwin.get_highlight(ida_kernwin.get_current_viewer())
@@ -216,7 +217,7 @@ def goto(shift=False):
 
     # Update IDA DECOMP view
     ea = gl.convert_address(address)
-    print("GhIDA:: [DEBUG] update view to %s" % ea)
+    # print("GhIDA:: [DEBUG] update view to %s" % ea)
     DECOMP_VIEW.switch_to_address(ea)
 
     return True
@@ -341,7 +342,7 @@ class DecompiledViewer_t(idaapi.simplecustviewer_t):
 
         # Update the cache
         DECOMPILED_CACHE.update_decompiled_cache(ea, decompiled)
-        print("GhIDA:: [DEBUG] GhIDA DECOM view updated to %s" % ea)
+        # print("GhIDA:: [DEBUG] GhIDA DECOM view updated to %s" % ea)
         return
 
     def switch_to_address(self, ea):
@@ -357,7 +358,7 @@ class DecompiledViewer_t(idaapi.simplecustviewer_t):
         """
         Add a commment to the selected line
         """
-        print("GhIDA:: [DEBUG] add_comment called")
+        # print("GhIDA:: [DEBUG] add_comment called")
         colored_line = self.GetCurrentLine(notags=1)
         if not colored_line:
             idaapi.warning("Select a line")
@@ -397,8 +398,8 @@ class DecompiledViewer_t(idaapi.simplecustviewer_t):
         # Add comment to cache
         COMMENTS_CACHE.add_comment_to_cache(self.__ea, num_line, full_comment)
 
-        print("GhIDA:: [DEBUG] Added comment to #line: %d (%s)" %
-              (num_line, new_text))
+        # print("GhIDA:: [DEBUG] Added comment to #line: %d (%s)" %
+        #       (num_line, new_text))
         return
 
     def add_comments(self, comment_list):
@@ -423,7 +424,7 @@ class DecompiledViewer_t(idaapi.simplecustviewer_t):
             self.EditLine(lineno, new_line)
 
         self.Refresh()
-        print("GhIDA:: [DEBUG] updated comments terminated")
+        # print("GhIDA:: [DEBUG] updated comments terminated")
         return
 
     def rename_symbol(self):
@@ -467,7 +468,7 @@ class DecompiledViewer_t(idaapi.simplecustviewer_t):
         gl.updated_symbol_name_for_address(symbol, address, new_name)
 
         # Update symbol name in IDA DISASM view.
-        print("GhIDA:: [DEBUG] New symbol name: %s" % new_name)
+        # print("GhIDA:: [DEBUG] New symbol name: %s" % new_name)
 
         # Update symbol name in the decompiled view
         new_code = gl.rename_variable_in_text(
@@ -553,10 +554,10 @@ class InvalidateCache(idaapi.action_handler_t):
 
     # Say hello when invoked.
     def activate(self, ctx):
-        print("GhIDA:: [DEBUG] InvalidateCache HELLO")
+        # print("GhIDA:: [DEBUG] InvalidateCache HELLO")
         address = gl.get_current_address()
         if not address:
-            print("GhIDA:: [DEBUG] address not found")
+            # print("GhIDA:: [DEBUG] address not found")
             return
 
         DECOMPILED_CACHE.invalidate_cache(address)
@@ -576,7 +577,7 @@ class DisasmTracker(idaapi.action_handler_t):
 
     # Say hello when invoked.
     def activate(self, ctx):
-        print("GhIDA:: [DEBUG] DisasmTracker HELLO")
+        # print("GhIDA:: [DEBUG] DisasmTracker HELLO")
 
         if GHIDA_CONF.disasm_tracker:
             GHIDA_CONF.disasm_tracker = False
@@ -612,7 +613,7 @@ class DisasmsHandler(idaapi.action_handler_t):
 
     # Say hello when invoked.
     def activate(self, ctx):
-        print("GhIDA:: [DEBUG] DisasmsHandler HELLO")
+        # print("GhIDA:: [DEBUG] DisasmsHandler HELLO")
         decompile_function_wrapper()
         return 1
 
@@ -643,7 +644,7 @@ def register_handlers():
     """
     Register the handlers for the pop-up menu to interact with the UI
     """
-    print("GhIDA:: [DEBUG] Registering handlers")
+    # print("GhIDA:: [DEBUG] Registering handlers")
 
     # Load a custom icon
     icon_path = gl.plugin_resource("ghida.png")
@@ -720,7 +721,7 @@ def load_configuration():
     global COMMENTS_CACHE
 
     # Loading the plugin configuration
-    print("GhIDA:: [DEBUG] Reading GhIDA configuration")
+    # print("GhIDA:: [DEBUG] Reading GhIDA configuration")
     GHIDA_CONF = gl.GhidaConfiguration()
 
     print("GHIDA_CONF.load_save_cached_code",
@@ -929,7 +930,7 @@ def decompile_function_wrapper(cache_only=False, do_show=True):
                 msg += "Press Ctrl-Alt-D or Right click GhIDA decompiler "
                 msg += "to decompile the function."
                 DECOMP_VIEW.clear(msg=msg, do_show=do_show)
-            print("GhIDA:: [DEBUG] Function code not available in cache.")
+            # print("GhIDA:: [DEBUG] Function code not available in cache.")
             return
 
         # Cache miss - opt2: Use Ghidra to decompile the function

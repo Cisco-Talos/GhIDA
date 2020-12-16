@@ -311,7 +311,7 @@ class XmlExporter(IdaXml):
         self.display_summary('Export')
         idc.msg('\nDatabase exported to: ' + self.filename + '\n')
 
-        print("GhIDA:: [DEBUG] found %d symbols" % len(SYMBLE_TABLE_DICT))
+        # print("GhIDA:: [DEBUG] found %d symbols" % len(SYMBLE_TABLE_DICT))
         return
 
     # TODO: Test decompiler comments in batch and gui modes
@@ -1322,7 +1322,7 @@ class XmlExporter(IdaXml):
         # to Ghidra definitions. For x86 binaries, look at x86.ldefs
         # specifications.
         compiler_name = ida_typeinf.get_compiler_name(self.inf.cc.id)
-        print("GhIDA:: [DEBUG] compiler name: %s" % compiler_name)
+        # print("GhIDA:: [DEBUG] compiler name: %s" % compiler_name)
         new_compiler_name = ''
 
         if addr_model == '16-bit':
@@ -1374,7 +1374,7 @@ class XmlExporter(IdaXml):
                 print("GhIDA [!] unknown compiler not supported by Ghidra")
                 return False
 
-        print("GhIDA:: [DEBUG] new_compiler_name: %s" % new_compiler_name)
+        # print("GhIDA:: [DEBUG] new_compiler_name: %s" % new_compiler_name)
 
         # self.write_attribute(
         #     NAME, ida_typeinf.get_compiler_name(self.inf.cc.id))

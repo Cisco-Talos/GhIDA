@@ -44,7 +44,7 @@ class DecompiledCache:
                 file_id = "test"
             self.__cache_path = os.path.join(
                 tempfile.gettempdir(), CODE_CACHE_FILE % file_id)
-            print("GhIDA:: [DEBUG] code_cache_path: %s" % self.__cache_path)
+            # print("GhIDA:: [DEBUG] code_cache_path: %s" % self.__cache_path)
 
         except Exception:
             print("GhIDA:: [!] error while setting the comments cache")
@@ -53,33 +53,34 @@ class DecompiledCache:
     def invalidate_cache(self, address=None):
         if not address:
             self.__decompiled_cache = dict()
-            print("GhIDA:: [DEBUG] decompile cache is empty")
+            # print("GhIDA:: [DEBUG] decompile cache is empty")
         else:
             if address in self.__decompiled_cache:
                 del self.__decompiled_cache[address]
-                print("GhIDA:: [DEBUG] removed item (%s) from cache" % address)
+                # print("GhIDA:: [DEBUG] removed item (%s) from cache" % address)
             else:
-                print("GhIDA:: [DEBUG] item (%s) not found" % address)
+                # print("GhIDA:: [DEBUG] item (%s) not found" % address)
+                pass
         return
 
     def add_decompiled_to_cache(self, address, code):
         self.__decompiled_cache[address] = code
-        print("GhIDA:: [DEBUG] addedd code to cache (%s)" % address)
-        print("GhIDA:: [DEBUG] %d elements in cache" %
-              len(self.__decompiled_cache))
+        # print("GhIDA:: [DEBUG] addedd code to cache (%s)" % address)
+        # print("GhIDA:: [DEBUG] %d elements in cache" %
+        #       len(self.__decompiled_cache))
         return
 
     def update_decompiled_cache(self, address, code):
         if address in self.__decompiled_cache:
             self.__decompiled_cache[address] = code
-            print("GhIDA:: [DEBUG] cache updated (%s)" % address)
+            # print("GhIDA:: [DEBUG] cache updated (%s)" % address)
         return
 
     def get_decompiled_cache(self, address):
         if address in self.__decompiled_cache:
-            print("GhIDA:: [DEBUG] decompiled cache hit (%s)" % address)
+            # print("GhIDA:: [DEBUG] decompiled cache hit (%s)" % address)
             return self.__decompiled_cache[address]
-        print("GhIDA:: [DEBUG] decompiled cache miss (%s)" % address)
+        # print("GhIDA:: [DEBUG] decompiled cache miss (%s)" % address)
         return None
 
     def dump_cache_to_json(self):
@@ -91,11 +92,11 @@ class DecompiledCache:
 
     def load_cache_from_json(self):
         try:
-            print("GhIDA:: [DEBUG] loading decomp cache from json")
+            # print("GhIDA:: [DEBUG] loading decomp cache from json")
             with open(self.__cache_path) as f_in:
                 self.__decompiled_cache = json.load(f_in)
-                print("GhIDA:: [DEBUG] loaded %d items from cache" % len(
-                    self.__decompiled_cache))
+                # print("GhIDA:: [DEBUG] loaded %d items from cache" % len(
+                #     self.__decompiled_cache))
         except Exception:
             print("GhIDA:: [!] error while loading code from %s" %
                   self.__cache_path)
